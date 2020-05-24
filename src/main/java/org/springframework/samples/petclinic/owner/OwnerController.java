@@ -15,6 +15,8 @@
  */
 package org.springframework.samples.petclinic.owner;
 
+import org.springframework.samples.petclinic.model.BaseEntity;
+import org.springframework.samples.petclinic.visit.Visit;
 import org.springframework.samples.petclinic.visit.VisitRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,6 +31,9 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.validation.Valid;
 import java.util.Collection;
 import java.util.Map;
+
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * @author Juergen Hoeller
@@ -135,9 +140,9 @@ class OwnerController {
 	public ModelAndView showOwner(@PathVariable("ownerId") int ownerId) {
 		ModelAndView mav = new ModelAndView("owners/ownerDetails");
 		Owner owner = this.owners.findById(ownerId);
-		for (Pet pet : owner.getPets()) {
-			pet.setVisitsInternal(visits.findByPetId(pet.getId()));
-		}
+		Map<Integer, Pet> pets = owner.getPets().stream().collect(toMap(BaseEntity::getId, it -> it));
+		this.visits.findByPetIdIn(pets.keySet()).stream().collect(groupingBy(Visit::getPetId))
+				.forEach((key, value) -> pets.get(key).setVisitsInternal(value));
 		mav.addObject(owner);
 		return mav;
 	}
