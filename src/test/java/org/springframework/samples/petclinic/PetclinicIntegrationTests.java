@@ -20,8 +20,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.samples.petclinic.vet.VetRepository;
+import org.springframework.test.annotation.DirtiesContext;
 
-@SpringBootTest
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
+
+@SpringBootTest(webEnvironment = NONE)
+@DirtiesContext
 class PetclinicIntegrationTests {
 
 	@Autowired

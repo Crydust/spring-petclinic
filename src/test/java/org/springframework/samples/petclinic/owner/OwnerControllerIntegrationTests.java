@@ -9,16 +9,19 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.test.annotation.DirtiesContext;
 
 import javax.sql.DataSource;
 
 import static com.vladmihalcea.sql.SQLStatementCountValidator.assertSelectCount;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = NONE)
+@DirtiesContext
 class OwnerControllerIntegrationTests {
 
 	@TestConfiguration
-	public static class DataSourceConfiguration {
+	static class DataSourceConfiguration {
 
 		@Bean
 		public DataSource dataSource(DataSourceProperties dataSourceProperties) {
