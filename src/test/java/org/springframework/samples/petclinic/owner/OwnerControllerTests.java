@@ -36,6 +36,7 @@ import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -84,7 +85,10 @@ class OwnerControllerTests {
 		given(this.owners.findById(TEST_OWNER_ID)).willReturn(george);
 		Visit visit = new Visit();
 		visit.setDate(LocalDate.now());
+		visit.setPetId(max.getId());
 		given(this.visits.findByPetId(max.getId())).willReturn(Collections.singletonList(visit));
+		given(this.visits.findByPetIdIn(argThat(arg -> max.getId().equals(arg.iterator().next()))))
+				.willReturn(Collections.singletonList(visit));
 	}
 
 	@Test
